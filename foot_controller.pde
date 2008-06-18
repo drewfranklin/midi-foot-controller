@@ -3,15 +3,6 @@
  * -------------
  * Convert Arduino to a MIDI controller using various inputs and
  * the serial port as a MIDI output.
- *
- * This sketch is set up to send General MIDI (GM) drum notes 
- * on MIDI channel 1, but it can be easily reconfigured for other
- * notes and channels
- *
- * It uses switch inputs to send MIDI notes of a fixed velocity with
- * note on time determined by duration of keypress and it uses
- * piezo buzzer elements as inputs to send MIDI notes of a varying velocity
- * & duration, depending on forced of impulse imparted to piezo sensor.
  *  
  *  pin 1 orange
  *  pin 2 braiding arround the edge
@@ -48,49 +39,68 @@
 #define switchCPin 5
 #define ledPin     13  // for midi out status
 
-int switchAState = LOW;
-int switchBState = LOW;
-int switchCState = LOW;
-int currentSwitchState = LOW;
-
-int val,t;
+int valA, valB, valC;                             // variable for reading the pin status
+int valA2, valB2, valC2;                          // variable for reading the delayed status
+int buttonStateA, buttonStateB, buttonStateC;     // variable to hold the button state
 
 void setup() {
   pinMode(switchAPin, INPUT);
   pinMode(switchBPin, INPUT);
   pinMode(switchCPin, INPUT);
-  digitalWrite(switchAPin, HIGH);  // turn on internal pullup
-  digitalWrite(switchBPin, HIGH);  // turn on internal pullup
-  digitalWrite(switchCPin, HIGH);  // turn on internal pullup
 
+  
   pinMode(ledPin, OUTPUT);
   Serial.begin(31250);   // set MIDI baud rate
+  buttonStateA = digitalRead(switchAPin);   // read the initial state
+  buttonStateB = digitalRead(switchBPin);   // read the initial state
+  buttonStateC = digitalRead(switchCPin);   // read the initial state
 }
 
 void loop() {
-  // deal with switchA
-  currentSwitchState = digitalRead(switchAPin);
-  if( currentSwitchState == LOW && switchAState == HIGH ) // push
-    noteOn(midichan,  note_record, 64);
-  if( currentSwitchState == HIGH && switchAState == LOW ) // release
-    noteOff(midichan, note_record, 0);
-  switchAState = currentSwitchState;
-
-  // deal with switchB
-  currentSwitchState = digitalRead(switchBPin);
-  if( currentSwitchState == LOW && switchBState == HIGH ) // push
-    noteOn(midichan,  note_overdub, 64);
-  if( currentSwitchState == HIGH && switchBState == LOW ) // release
-    noteOff(midichan, note_overdub, 0);
-  switchBState = currentSwitchState;
-
-  // deal with switchC
-  currentSwitchState = digitalRead(switchCPin);
-  if( currentSwitchState == LOW && switchCState == HIGH ) // push
-    noteOn(midichan,  note_mute, 64);
-  if( currentSwitchState == HIGH && switchCState == LOW ) // release
-    noteOff(midichan, note_mute, 0);
-  switchCState = currentSwitchState;
+  // Switch 1 Start
+  valA = digitalRead(switchAPin);      // read input value and store it in val
+  delay(10);                         // 10 milliseconds is a good amount of time
+  valA2 = digitalRead(switchAPin);     // read the input again to check for bounces
+  if (valA == valA2) {                 // make sure we got 2 consistant readings!
+    if (valA != buttonStateA) {          // the button state has changed!
+      if (valA == LOW) {            // check if the button is pressed
+        noteOn(midichan,  note_record, 64);
+      } else {
+        noteOff(midichan, note_record, 0); 
+      }
+    }
+    buttonStateA = valA;                 // save the new state in our variable
+  } // Switch 1 End
+  
+  // Switch 2 Start
+  valB = digitalRead(switchBPin);      // read input value and store it in val
+  delay(10);                         // 10 milliseconds is a good amount of time
+  valB2 = digitalRead(switchBPin);     // read the input again to check for bounces
+  if (valB == valB2) {                 // make sure we got 2 consistant readings!
+    if (valB != buttonStateB) {          // the button state has changed!
+      if (valB == LOW) {            // check if the button is pressed
+        noteOn(midichan,  note_overdub, 64);
+      } else {
+        noteOff(midichan, note_overdub, 0); 
+      }
+    }
+    buttonStateB = valB;                 // save the new state in our variable
+  } // Switch 2 End
+  
+  // Switch 3 Start
+  valC = digitalRead(switchCPin);      // read input value and store it in val
+  delay(10);                         // 10 milliseconds is a good amount of time
+  valC2 = digitalRead(switchCPin);     // read the input again to check for bounces
+  if (valC == valC2) {                 // make sure we got 2 consistant readings!
+    if (valC != buttonStateC) {          // the button state has changed!
+      if (valC == LOW) {            // check if the button is pressed
+        noteOn(midichan,  note_mute, 64);
+      } else {
+        noteOff(midichan, note_mute, 0); 
+      }
+    }
+    buttonStateC = valC;                 // save the new state in our variable
+  } // Switch 3 End
 }
 
 // Send a MIDI note-on message.  Like pressing a piano key
