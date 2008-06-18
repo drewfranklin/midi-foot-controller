@@ -35,7 +35,7 @@
  */
 
 // what midi channel we're sending on
-#define drumchan           1
+#define midichan           1
 
 // general midi drum notes
 #define note_record     38
@@ -71,25 +71,25 @@ void loop() {
   // deal with switchA
   currentSwitchState = digitalRead(switchAPin);
   if( currentSwitchState == LOW && switchAState == HIGH ) // push
-    noteOn(drumchan,  note_record, 64);
+    noteOn(midichan,  note_record, 64);
   if( currentSwitchState == HIGH && switchAState == LOW ) // release
-    noteOff(drumchan, note_record, 0);
+    noteOff(midichan, note_record, 0);
   switchAState = currentSwitchState;
 
   // deal with switchB
   currentSwitchState = digitalRead(switchBPin);
   if( currentSwitchState == LOW && switchBState == HIGH ) // push
-    noteOn(drumchan,  note_overdub, 64);
+    noteOn(midichan,  note_overdub, 64);
   if( currentSwitchState == HIGH && switchBState == LOW ) // release
-    noteOff(drumchan, note_overdub, 0);
+    noteOff(midichan, note_overdub, 0);
   switchBState = currentSwitchState;
 
   // deal with switchC
   currentSwitchState = digitalRead(switchCPin);
   if( currentSwitchState == LOW && switchCState == HIGH ) // push
-    noteOn(drumchan,  note_mute, 64);
+    noteOn(midichan,  note_mute, 64);
   if( currentSwitchState == HIGH && switchCState == LOW ) // release
-    noteOff(drumchan, note_mute, 0);
+    noteOff(midichan, note_mute, 0);
   switchCState = currentSwitchState;
 }
 
