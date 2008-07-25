@@ -29,34 +29,203 @@
 #define midichan         1
 
 // general midi drum notes
-#define note_record     38
-#define note_overdub    39
-#define note_mute       42
+#define record     38
+#define overdub    39
+#define mute       42
+int switchA, switchB, switchC;
 
 // define the pins we use
-#define switchAPin 7
-#define switchBPin 6
-#define switchCPin 5
-#define ledPin     13  // for midi out status
+#define incSwitchUpPin 9
+#define incSwitchDownPin 10
+
+#define switchAPin 11
+#define switchBPin 12
+#define switchCPin 13
 
 int buttonStateA, buttonStateB, buttonStateC;     // variable to hold the button state
+int incButtonStateUp, incButtonStateDown;     // variable to hold the button state
+int counter = 0; 				// variable the keeps number number in the display
 
 void setup() {
 	pinMode(switchAPin, INPUT);
 	pinMode(switchBPin, INPUT);
 	pinMode(switchCPin, INPUT);
+	
+	pinMode(incSwitchUpPin, INPUT);
+	pinMode(incSwitchDownPin, INPUT);
   
-	pinMode(ledPin, OUTPUT);
 	Serial.begin(31250);   // set MIDI baud rate
+	
 	buttonStateA = digitalRead(switchAPin);   // read the initial state
 	buttonStateB = digitalRead(switchBPin);   // read the initial state
 	buttonStateC = digitalRead(switchCPin);   // read the initial state
+
+	incButtonStateUp = digitalRead(incSwitchUpPin);   // read the initial state
+	incButtonStateDown = digitalRead(incSwitchDownPin);   // read the initial state
+	
+	for(int i=2; i<9; i++) { // initializes pins 0 to 7 as outputs
+		pinMode(i, OUTPUT);
+	}
 }
 
 void loop() {
-	readMidiSwitch(switchAPin, note_record, buttonStateA);
-	readMidiSwitch(switchBPin, note_overdub, buttonStateB);
-	readMidiSwitch(switchCPin, note_mute, buttonStateC); 
+	readMidiSwitch(switchAPin, switchA, buttonStateA);
+	readMidiSwitch(switchBPin, switchB, buttonStateB);
+	readMidiSwitch(switchCPin, switchC, buttonStateC);
+	
+	readIncSwitch(incSwitchUpPin, 1, incButtonStateUp);
+	readIncSwitch(incSwitchDownPin, 0, incButtonStateDown); 
+}
+
+// Read a Switch Wait
+void readIncSwitch(int switchPin, byte boolean, int buttonState) {
+	turnAllOff();
+	setLED(counter);
+	int val = digitalRead(switchPin);      // read input value and store it in val
+	delay(10);                         // 10 milliseconds is a good amount of time
+	int val2 = digitalRead(switchPin);     // read the input again to check for bounces
+	if (val == val2) {                 // make sure we got 2 consistant readings!
+		if (val != buttonState) {          // the button state has changed!
+			if (val == LOW) {          // check if the button is pressed
+				if (boolean == 1) {
+					if (counter < 9) {
+						counter++;
+					}
+					else {
+						counter = 0;
+					}	
+				}
+				else {
+					if (counter > 0) {
+						counter--;
+					}
+					else {
+						counter = 9;
+					}
+				}
+			}
+		}
+		buttonState = val;                 // save the new state in our variable
+	} // Switch End
+	delay(175);
+}
+
+void turnAllOff() { // function to turn off all the lights
+	for(int i=2; i<9; i++) {
+		digitalWrite(i, HIGH);
+	}
+}
+
+void setLED(int aNumber) {
+	int number = aNumber;
+	if(number==0) {
+		digitalWrite(5, LOW);
+		digitalWrite(4, LOW);
+		digitalWrite(3, LOW);
+		digitalWrite(8, LOW);
+		digitalWrite(7, LOW);
+		digitalWrite(2, LOW);
+		switchA = record;
+		switchB = overdub;
+		switchC = mute;
+	}
+
+	if(number==1) {
+		digitalWrite(3, LOW);
+		digitalWrite(2, LOW);
+		switchA = record;
+		switchB = overdub;
+		switchC = mute;
+	}
+
+	if(number==2) {
+		digitalWrite(6, LOW);
+		digitalWrite(4, LOW);
+		digitalWrite(3, LOW);
+		digitalWrite(8, LOW);
+		digitalWrite(7, LOW);
+		switchA = record;
+		switchB = overdub;
+		switchC = mute;
+	}
+
+	if(number==3) {
+		digitalWrite(6, LOW);
+		digitalWrite(4, LOW);
+		digitalWrite(3, LOW);
+		digitalWrite(7, LOW);
+		digitalWrite(2, LOW);
+		switchA = record;
+		switchB = overdub;
+		switchC = mute;
+	}
+
+	if(number==4) {
+		digitalWrite(6, LOW);
+		digitalWrite(5, LOW);
+		digitalWrite(3, LOW);
+		digitalWrite(2, LOW);
+		switchA = record;
+		switchB = overdub;
+		switchC = mute;
+	}
+
+	if(number==5) {
+		digitalWrite(6, LOW);
+		digitalWrite(5, LOW);
+		digitalWrite(4, LOW);
+		digitalWrite(7, LOW);
+		digitalWrite(2, LOW);
+		switchA = record;
+		switchB = overdub;
+		switchC = mute;
+	}
+
+	if(number==6) {
+		digitalWrite(6, LOW);
+		digitalWrite(5, LOW);
+		digitalWrite(4, LOW);
+		digitalWrite(8, LOW);
+		digitalWrite(7, LOW);
+		digitalWrite(2, LOW);
+		switchA = record;
+		switchB = overdub;
+		switchC = mute;
+	}
+
+	if(number==7) {
+		digitalWrite(4, LOW);
+		digitalWrite(3, LOW);
+		digitalWrite(2, LOW);
+		switchA = record;
+		switchB = overdub;
+		switchC = mute;
+	}
+
+	if(number==8) {
+		digitalWrite(6, LOW);
+		digitalWrite(5, LOW);
+		digitalWrite(4, LOW);
+		digitalWrite(3, LOW);
+		digitalWrite(8, LOW);
+		digitalWrite(7, LOW);
+		digitalWrite(2, LOW);
+		switchA = record;
+		switchB = overdub;
+		switchC = mute;
+	}
+
+	if(number==9) {
+		digitalWrite(6, LOW);
+		digitalWrite(5, LOW);
+		digitalWrite(4, LOW);
+		digitalWrite(3, LOW);
+		digitalWrite(7, LOW);
+		digitalWrite(2, LOW);
+		switchA = record;
+		switchB = overdub;
+		switchC = mute;
+	}
 }
 
 // Read a Switch Wait
@@ -92,9 +261,7 @@ void noteOff(byte channel, byte note, byte velocity) {
 
 // Send a general MIDI message
 void midiMsg(byte cmd, byte data1, byte data2) {
-	digitalWrite(ledPin,HIGH);  // indicate we're sending MIDI data
 	Serial.print(cmd, BYTE);
 	Serial.print(data1, BYTE);
 	Serial.print(data2, BYTE);
-	digitalWrite(ledPin,LOW);
 }

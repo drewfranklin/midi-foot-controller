@@ -19,7 +19,6 @@ void setup() {
 void loop() {
 	readIncSwitch(incSwitchUpPin, 1, incButtonStateUp);
 	readIncSwitch(incSwitchDownPin, 0, incButtonStateDown);
-	delay(200);
 }
 
 // Read a Switch Wait
@@ -52,6 +51,7 @@ void readIncSwitch(int switchPin, byte boolean, int buttonState) {
 		}
 		buttonState = val;                 // save the new state in our variable
 	} // Switch End
+	delay(175);
 }
 
 void turnAllOff() { // function to turn off all the lights
