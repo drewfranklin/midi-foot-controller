@@ -28,19 +28,7 @@
 // what midi channel we're sending on
 #define midichan         1
 
-// general midi drum notes
-#define record     38
-#define overdub    39
-#define mute       42
-#define multiply   40
-#define insert     41
-#define undo       43
-#define next       44
-#define replace    45
-#define substitute 46
-#define insertOnly 47
-#define speedy     48
-#define reverse    49
+#import "banks.h"
 
 int switchA, switchB, switchC;
 
@@ -190,17 +178,17 @@ void setLED(int aNumber) {
 		digitalWrite(5, LOW);
 		digitalWrite(7, LOW);
 		digitalWrite(8, LOW);
-		switchA = record;
-		switchB = overdub;
-		switchC = mute;
+		switchA = bank0A;
+		switchB = bank0B;
+		switchC = bank0C;
 	}
 
 	if(number==1) {
 		digitalWrite(2, LOW);
 		digitalWrite(3, LOW);
-		switchA = multiply;
-		switchB = insert;
-		switchC = undo;
+		switchA = bank1A;
+		switchB = bank1B;
+		switchC = bank1C;
 	}
 
 	if(number==2) {
@@ -209,9 +197,9 @@ void setLED(int aNumber) {
 		digitalWrite(6, LOW);
 		digitalWrite(7, LOW);
 		digitalWrite(8, LOW);
-		switchA = next;
-		switchB = replace;
-		switchC = substitute;
+		switchA = bank2A;
+		switchB = bank2B;
+		switchC = bank2C;
 	}
 
 	if(number==3) {
@@ -220,9 +208,9 @@ void setLED(int aNumber) {
 		digitalWrite(4, LOW);
 		digitalWrite(6, LOW);
 		digitalWrite(7, LOW);
-		switchA = insertOnly;
-		switchB = speedy;
-		switchC = reverse;
+		switchA = bank3A;
+		switchB = bank3B;
+		switchC = bank3C;
 	}
 
 	if(number==4) {
@@ -230,9 +218,9 @@ void setLED(int aNumber) {
 		digitalWrite(3, LOW);
 		digitalWrite(5, LOW);
 		digitalWrite(6, LOW);
-		switchA = record;
-		switchB = overdub;
-		switchC = mute;
+		switchA = bank4A;
+		switchB = bank4B;
+		switchC = bank4C;
 	}
 
 	if(number==5) {
@@ -241,9 +229,9 @@ void setLED(int aNumber) {
 		digitalWrite(5, LOW);
 		digitalWrite(6, LOW);
 		digitalWrite(7, LOW);
-		switchA = record;
-		switchB = overdub;
-		switchC = mute;
+		switchA = bank5A;
+		switchB = bank5B;
+		switchC = bank5C;
 	}
 
 	if(number==6) {
@@ -253,18 +241,18 @@ void setLED(int aNumber) {
 		digitalWrite(6, LOW);
 		digitalWrite(7, LOW);
 		digitalWrite(8, LOW);
-		switchA = record;
-		switchB = overdub;
-		switchC = mute;
+		switchA = bank6A;
+		switchB = bank6B;
+		switchC = bank6C;
 	}
 
 	if(number==7) {
 		digitalWrite(2, LOW);
 		digitalWrite(3, LOW);
 		digitalWrite(4, LOW);
-		switchA = record;
-		switchB = overdub;
-		switchC = mute;
+		switchA = bank7A;
+		switchB = bank7B;
+		switchC = bank7C;
 	}
 
 	if(number==8) {
@@ -275,9 +263,9 @@ void setLED(int aNumber) {
 		digitalWrite(6, LOW);
 		digitalWrite(7, LOW);
 		digitalWrite(8, LOW);
-		switchA = record;
-		switchB = overdub;
-		switchC = mute;
+		switchA = bank8A;
+		switchB = bank8B;
+		switchC = bank8C;
 	}
 
 	if(number==9) {
@@ -287,9 +275,9 @@ void setLED(int aNumber) {
 		digitalWrite(5, LOW);
 		digitalWrite(6, LOW);
 		digitalWrite(7, LOW);
-		switchA = record;
-		switchB = overdub;
-		switchC = mute;
+		switchA = bank9A;
+		switchB = bank9B;
+		switchC = bank9C;
 	}
 }
 
