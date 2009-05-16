@@ -38,7 +38,7 @@ int switchA, switchB, switchC;
 
 #define switchAPin 11
 #define switchBPin 12
-#define switchCPin 13
+#define switchCPin 19
 
 int buttonStateA, buttonStateB, buttonStateC;    // variable to hold the button state
 int incButtonStateUp, incButtonStateDown;     // variable to hold the button state
@@ -79,11 +79,11 @@ void setup() {
 }
 
 void loop() {
-  //int volVal = analogRead(0);
-  //if (volVal != volState) {
+  int volVal = analogRead(0);
+  if (volVal != volState) {
     midi_volume(midichan, analogRead(0) / 6.83 - 2);
-  //}
-  //volState = volVal;
+  }
+  volState = volVal;
  
   // Switch A Start
   int valA = digitalRead(switchAPin);      // read input value and store it in val
